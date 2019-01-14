@@ -13,36 +13,16 @@ import java.util.concurrent.CountDownLatch;
 public class MessageListener {
     public CountDownLatch greetingLatch = new CountDownLatch(1);
     private SelectItem selectItem;
-    private JSONObject jsonObject;
 
-
-    @KafkaListener(topics = "${select-item.topic.name}", containerFactory = "filterKafkaListenerContainerFactory")
+    @KafkaListener(topics = "${select-item.topic.name}", containerFactory = "selectItemKafkaListenerContainerFactory")
     public void greetingListener(SelectItem selectItem) {
-        System.out.println("Recieved selectItem message: " + selectItem.toString());
+        System.out.println("Recieved selectItem message: " + selectItem);
         this.selectItem = selectItem;
         this.greetingLatch.countDown();
     }
 
-    @KafkaListener(id = "select-item-api", topicPartitions = { @TopicPartition(topic = "schema.select-item",
-                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
-                            @TopicPartition(topic = "data.select-item", partitions = { "0" })})
-    public void receiveMessage(String message) {
-        try {
-            JSONObject incomingJsonObject = new JSONObject(message);
-            if (!incomingJsonObject.isNull("data")) {
-                this.jsonObject = incomingJsonObject;
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public SelectItem getSelectItem(){
         return selectItem;
-    }
-    public JSONObject getJsonObject(){
-        return jsonObject;
     }
 
 }

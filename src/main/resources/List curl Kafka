@@ -1,0 +1,49 @@
+curl -X POST \
+  http://localhost:8080/transaction/select-item \
+  -H 'Content-Type: application/json' \
+  -d '{
+	"userId":1,
+	"items":[{
+		"id":1,
+		"amount":2
+	},
+	{
+		"id":3,
+		"amount":4
+	}
+		]
+}'
+
+curl -X GET \
+  http://localhost:8080/transaction/select-item \
+  -H 'Content-Type: application/json' \
+  -d '{
+	"userId":1,
+	"items":[{
+		"id":1,
+		"amount":2
+	},
+	{
+		"id":4,
+		"amount":4
+	}
+		]
+}'
+
+curl -X POST \
+  http://localhost:8080/transaction/order-item \
+  -H 'Content-Type: application/json' \
+  -H 'Postman-Token: ad943001-5d8f-4e15-a397-f6f86d795348' \
+  -H 'cache-control: no-cache' \
+  -d '{
+	"userId":2,
+	"items":[{
+		"id":1,
+		"amount":5
+	},
+	{
+		"id":3,
+		"amount":4
+	}
+		]
+}'

@@ -2,10 +2,12 @@ package com.tito.kafka.DAO;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Setter
 @Getter
-public class Item {
-    private String id;
+@ToString
+public class ItemDAO {
+    private Integer id;
     private int amount;
 }

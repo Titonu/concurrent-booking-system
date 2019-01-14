@@ -40,23 +40,23 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, SelectItem> greetingKafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, SelectItem> selectItemKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, SelectItem> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(selectItemConsumerFactory());
         return factory;
     }
 
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, SelectItem> filterKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, SelectItem> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(selectItemConsumerFactory());
-        factory.setRecordFilterStrategy(consumerRecord -> {
-            if (consumerRecord.value().getItem().getId().isEmpty()) {
-                return true;
-            }else {
-                return false;
-            }
-        });
-        return factory;
-    }
+//    @Bean
+//    public ConcurrentKafkaListenerContainerFactory<String, SelectItem> filterKafkaListenerContainerFactory() {
+//        ConcurrentKafkaListenerContainerFactory<String, SelectItem> factory = new ConcurrentKafkaListenerContainerFactory<>();
+//        factory.setConsumerFactory(selectItemConsumerFactory());
+//        factory.setRecordFilterStrategy(consumerRecord -> {
+//            if (consumerRecord.value().getItem().getId().isEmpty()) {
+//                return true;
+//            }else {
+//                return false;
+//            }
+//        });
+//        return factory;
+//    }
 }
