@@ -78,6 +78,8 @@ public class TransactionController {
 
     @PostMapping(value = "/select-item")
     public GenericResponse sendMessageSelectItem(@RequestBody SelectItem selectItem) throws InterruptedException {
+        /*
+        //uncomment if need checking item availability before select item
         SelectItem selectedItem = messageListener.getSelectItem();
         HashMap<String, Object> itemAvailable = isItemAvailableCheck(selectedItem, selectedItem);
         String itemName = (String) itemAvailable.get("itemName");
@@ -86,7 +88,7 @@ public class TransactionController {
         if (!isAvailable){
             return new GenericResponse(202, "The amount item "+ itemName +" that you selected is not available" +
                     " current amount available is: "+ availableAmount );
-        }
+        }*/
         messageProducer.sendSelectItemMessage(selectItem);
         logger.info("sending message: ", selectItem);
         messageListener.greetingLatch.await(10, TimeUnit.SECONDS);
