@@ -44,9 +44,9 @@ public class TransactionController {
 
     @PostMapping(value = "/order-item")
     public GenericResponse createNewOrder(@RequestBody SelectItem request){
-        SelectItem selectItemMessage = messageListener.getSelectItem();
-        if (selectItemMessage != null){
-            HashMap<String, Object> itemAvailable = isItemAvailableCheck(request, selectItemMessage);
+        SelectItem selectedItem = messageListener.getSelectItem();
+        if (selectedItem != null){
+            HashMap<String, Object> itemAvailable = isItemAvailableCheck(request, selectedItem);
             String itemName = (String) itemAvailable.get("itemName");
             Integer availableAmount = (Integer) itemAvailable.get("availableAmount");
             Boolean isAvailable = (Boolean) itemAvailable.get("isAvailable");
@@ -60,12 +60,6 @@ public class TransactionController {
         transaction.setUser(user);
         for (ItemDAO i :request.getItems()) {
             Optional<Item> itemById = itemRepository.findById(i.getId());
-//            if (!itemById.isPresent()){
-//                return new GenericResponse(400, "item id "+i.getId()+" is not found");
-//            }
-//            if (i.getAmount() > itemById.get().getAmount()){
-//                return new GenericResponse(200, "item "+itemById.get().getName()+" is exceed the current available item");
-//            }
             TransactionItem transactionItem = new TransactionItem();
             transactionItem.setItem(itemById.get());
             transactionItem.setAmount(i.getAmount());
@@ -78,20 +72,22 @@ public class TransactionController {
 
     @PostMapping(value = "/select-item")
     public GenericResponse sendMessageSelectItem(@RequestBody SelectItem selectItem) throws InterruptedException {
-        /*
         //uncomment if need checking item availability before select item
         SelectItem selectedItem = messageListener.getSelectItem();
-        HashMap<String, Object> itemAvailable = isItemAvailableCheck(selectedItem, selectedItem);
-        String itemName = (String) itemAvailable.get("itemName");
-        Integer availableAmount = (Integer) itemAvailable.get("availableAmount");
-        Boolean isAvailable = (Boolean) itemAvailable.get("isAvailable");
+        Boolean isAvailable = true;
+        if (selectedItem != null) {
+            HashMap<String, Object> itemAvailable = isItemAvailableCheck(selectItem, selectedItem);
+            isAvailable = (Boolean) itemAvailable.get("isAvailable");
+        }
+        logger.info("is available: {}", isAvailable);
         if (!isAvailable){
-            return new GenericResponse(202, "The amount item "+ itemName +" that you selected is not available" +
-                    " current amount available is: "+ availableAmount );
-        }*/
-        messageProducer.sendSelectItemMessage(selectItem);
-        logger.info("sending message: ", selectItem);
-        messageListener.greetingLatch.await(10, TimeUnit.SECONDS);
+            return new GenericResponse<>(202, "The selected item message is not sent, " +
+                    "because the selected item is exceed the amount item that available");
+        } else{
+            messageProducer.sendSelectItemMessage(selectItem);
+            logger.info("sending message: ", selectItem);
+            messageListener.greetingLatch.await(10, TimeUnit.SECONDS);
+        }
         return new GenericResponse<>(200, "select item message has been sent", selectItem);
     }
 
