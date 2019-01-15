@@ -1,24 +1,25 @@
 package com.tito.kafka.Messages;
 
 import com.tito.kafka.DAO.SelectItem;
-import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.annotation.PartitionOffset;
-import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CountDownLatch;
 
 @Component
 public class MessageListener {
-    public CountDownLatch greetingLatch = new CountDownLatch(1);
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public CountDownLatch selectItemLatch = new CountDownLatch(1);
     private SelectItem selectItem;
 
     @KafkaListener(topics = "${select-item.topic.name}", containerFactory = "selectItemKafkaListenerContainerFactory")
-    public void greetingListener(SelectItem selectItem) {
-        System.out.println("Recieved selectItem message: " + selectItem);
+    public void selectItemListener(SelectItem selectItem) {
+        logger.info("Recieved selectItem message: {}", selectItem);
         this.selectItem = selectItem;
-        this.greetingLatch.countDown();
+        this.selectItemLatch.countDown();
     }
 
     public SelectItem getSelectItem(){
