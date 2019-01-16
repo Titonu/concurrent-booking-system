@@ -132,7 +132,7 @@ curl -X POST \
 		]
 }'
 ```
-in term of concurrent request order between Manda and susan you can test it by [JMeter] or any other tool.
+in term of concurrent request order between Manda and Susan you can test it by [JMeter] or any other tool.
 
 
    [Kafka]: <https://kafka.apache.org/>
